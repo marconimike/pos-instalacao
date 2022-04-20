@@ -18,12 +18,20 @@ LISTA_DE_PROGRAMAS=(
 	apt-transport-https
 	curl
 	snapd
+	dkms
+	make
+	perl
+	gcc
+	build-essential
+	git
+	zsh
 	)
 
 D_SOFT="/home/$USER/Downloads/programas"
 
 #------------------> Variáveis <------------------#
 
+echo "   Baixando pacotes   "
 #brave
 sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
@@ -49,11 +57,17 @@ wget -c "$VSCODE"    -P "$D_SOFT"
 wget -c "$DISCORD"   -P "$D_SOFT"
 wget -c "$CHROME"    -P "$D_SOFT"
 
+clear
+
 # instalando os .DEB
+
+echo "   Instalando pacotes baixados   "
 
 sudo dpkg -i $D_SOFT/*.deb
 sudo apt-get install -f -y
 
+clear 
+echo "   Instalando APT's  "
 # instalar programas via APT
 
 for nome_do_programa in ${LISTA_DE_PROGRAMAS[@]}; do
@@ -64,6 +78,30 @@ for nome_do_programa in ${LISTA_DE_PROGRAMAS[@]}; do
   fi
 done
 
+echo "   modificando shell pra ZSH"
+
+chsh -s /bin/zsh
+
+#Instalar Oh-my-zsh! -> https://ohmyz.sh/
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+
+#Instalar Spaceship Prompt
+git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
+ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+
+#Instalar Zsh Autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+# Instalar Zsh Syntax Highlighting
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+
+# Fonte ubuntu-mono-powerline-ttf
+mkdir -p ~/.fonts
+git clone https://github.com/pdf/ubuntu-mono-powerline-ttf.git ~/.fonts/ubuntu-mono-powerline-ttf
+fc-cache -vf
+
 
 ## Finalização, atualização e limpeza##
 sudo aptitude update && sudo aptitude dist-upgrade -y
@@ -71,3 +109,7 @@ flatpak update
 sudo apt-get autoclean
 sudo apt-get autoremove -y
 
+clear 
+echo "   Tudo pronto!   "
+sleep4
+clear
